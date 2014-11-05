@@ -101,9 +101,19 @@ class Rss {
 
 		foreach ($items as $item)
 		{
-			$elem_item = $xml->channel->addChild('item');
+			$elem_item = $xml->channel->addChild(isset($item['itemProperties']) && isset($item['itemProperties']['name']) ? $item['itemProperties']['name'] : 'item');
+			if (isset($item['itemProperties'])) {
+				unset($item['itemProperties']['name']);
+				foreach ($item['itemProperties'] as $key => $value) {
+					$elem_item->addAttribute($key, $value);
+				}
+			}
 
-			foreach ($item as $kI => $vI)
+			$itemData = $item;
+			if (isset($item['itemData']))
+				$itemData = $item['itemData'];
+
+			foreach ($itemData as $kI => $vI)
 			{
 				$options = explode('|', $kI);
 
